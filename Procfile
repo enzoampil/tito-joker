@@ -1,0 +1,1 @@
+web: sh setup.sh && streamlit run tito-jokes-app.py
