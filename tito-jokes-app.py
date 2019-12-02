@@ -1,7 +1,13 @@
 import streamlit as st
 import subprocess
-from google.cloud import storage
+#from google.cloud import storage
 import os
+
+SOURCE = "model1.zip"
+TARGET = "model1.zip"
+BUCKET = "joke-generator-model1"
+MAX_SAMPLES = 20
+CACHE_RESULTS = False
 
 def download_gcs(source, target, bucket_name):
     print('Downloading file "', source, '" from bucket: "', bucket_name, '"', 'to: "', target, '"')
@@ -33,14 +39,8 @@ def tell_joke(begin, num_samples, num_tokens=40):
     return processed_jokes
 
 if __name__=='__main__':
-    SOURCE = "model1.zip"
-    TARGET = "model1.zip"
-    BUCKET = "joke-generator-model1"
-    MAX_SAMPLES = 20
-    CACHE_RESULTS = False
-
-    if not os.path.exists(url.name):
-        download_gcs(SOURCE, TARGET, TARGET)
+#    if not os.path.exists(url.name):
+#        download_gcs(SOURCE, TARGET, TARGET)
 
     """
     # Ask Tito Joker anything! :)
