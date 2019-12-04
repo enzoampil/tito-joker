@@ -24,6 +24,7 @@ def clean_joke(joke):
 
 @st.cache(persist=CACHE_RESULTS)
 def tell_joke(begin, num_samples, num_tokens=40):
+    begin = begin.replace('?', '')
     a = '''python run_generation.py \
         --model_type=gpt2 \
         --model_name_or_path=./model1/ \
