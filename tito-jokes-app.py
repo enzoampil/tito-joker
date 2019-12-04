@@ -35,18 +35,18 @@ def tell_joke(begin, num_samples, num_tokens=40):
 
     out = subprocess.check_output(a, shell=True)
     jokes = (out.decode('utf-8').split('\n')[: -1])
-    processed_jokes = [begin.replace('?', '') + ' ' + clean_joke(joke) for joke in jokes]
+    processed_jokes = [begin + ' ' + clean_joke(joke) for joke in jokes]
     return processed_jokes
 
 if __name__=='__main__':
 #    if not os.path.exists(url.name):
 #        download_gcs(SOURCE, TARGET, TARGET)
 
-    """
+    st.markdown("""
     # Ask Tito Joker anything! :)
     
     Created by [Lorenzo Ampil](https://www.linkedin.com/in/lorenzoampil/)
-    """
+    """)
     num_tokens = st.sidebar.selectbox(
         'Token count for output',
         [10, 20, 40, 80, 160],
