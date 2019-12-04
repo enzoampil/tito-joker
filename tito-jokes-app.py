@@ -46,7 +46,7 @@ if __name__=='__main__':
     st.markdown("""
     # Ask Tito Joker anything! :)
     
-    Created by [Lorenzo Ampil](https://www.linkedin.com/in/lorenzoampil/)
+    Created by [Lorenzo Ampil](https://medium.com/@lorenzo.ampil)
     """)
     num_tokens = st.sidebar.selectbox(
         'Token count for output',
