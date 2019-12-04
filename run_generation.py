@@ -139,7 +139,7 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
             next_token_logits = outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.) # batch_size x vocab_size
 
             # Apply repetition penalty and next token generation for each sample
-            next_token_batch = torch.Tensor().long()
+            next_token_batch = torch.Tensor(device=device).long()
             for i, sample in enumerate(generated):
                 # repetition penalty from CTRL (https://arxiv.org/abs/1909.05858)
                 for _ in set(sample.view(-1).tolist()):
