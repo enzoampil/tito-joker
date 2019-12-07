@@ -158,43 +158,21 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
     return generated
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_type", default=None, type=str, required=True,
-                        help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
-    parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
-                        help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
-    parser.add_argument("--prompt", type=str, default="")
-    parser.add_argument("--padding_text", type=str, default="")
-    parser.add_argument("--xlm_lang", type=str, default="", help="Optional language when used with the XLM model.")
-    parser.add_argument("--length", type=int, default=20)
-    parser.add_argument("--num_samples", type=int, default=1)
-    parser.add_argument("--temperature", type=float, default=1.0,
-                        help="temperature of 0 implies greedy sampling")
-    parser.add_argument("--repetition_penalty", type=float, default=1.0,
-                        help="primarily useful for CTRL model; in that case, use 1.2")
-    parser.add_argument("--top_k", type=int, default=0)
-    parser.add_argument("--top_p", type=float, default=0.9)
-    parser.add_argument("--no_cuda", action='store_true',
-                        help="Avoid using CUDA when available")
-    parser.add_argument('--seed', type=int, default=42,
-                        help="random seed for initialization")
-    parser.add_argument('--stop_token', type=str, default=None,
-                        help="Token at which text generation is stopped")
-    args = parser.parse_args()
-
-    args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
-    args.n_gpu = torch.cuda.device_count()
+def read_model_tokenizer(args):
+    """
+    Reads and returns language model and tokenizer.
+    This is important for deployment so that both the model and tokenizer can be read only once while generating text multiple times.
+    """
 
     set_seed(args)
-
-    args.model_type = args.model_type.lower()
     model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
     tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
     model = model_class.from_pretrained(args.model_name_or_path)
     model.to(args.device)
     model.eval()
+    return model, tokenizer
 
+def generate_text(args, model, tokenizer):
     if args.length < 0 and model.config.max_position_embeddings > 0:
         args.length = model.config.max_position_embeddings
     elif 0 < model.config.max_position_embeddings < args.length:
@@ -262,6 +240,38 @@ def main():
         if args.prompt:
             break
     return text_candidates
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_type", default=None, type=str, required=True,
+                        help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
+    parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
+                        help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
+    parser.add_argument("--prompt", type=str, default="")
+    parser.add_argument("--padding_text", type=str, default="")
+    parser.add_argument("--xlm_lang", type=str, default="", help="Optional language when used with the XLM model.")
+    parser.add_argument("--length", type=int, default=20)
+    parser.add_argument("--num_samples", type=int, default=1)
+    parser.add_argument("--temperature", type=float, default=1.0,
+                        help="temperature of 0 implies greedy sampling")
+    parser.add_argument("--repetition_penalty", type=float, default=1.0,
+                        help="primarily useful for CTRL model; in that case, use 1.2")
+    parser.add_argument("--top_k", type=int, default=0)
+    parser.add_argument("--top_p", type=float, default=0.9)
+    parser.add_argument("--no_cuda", action='store_true',
+                        help="Avoid using CUDA when available")
+    parser.add_argument('--seed', type=int, default=42,
+                        help="random seed for initialization")
+    parser.add_argument('--stop_token', type=str, default=None,
+                        help="Token at which text generation is stopped")
+    
+    args = parser.parse_args()
+    args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+    args.n_gpu = torch.cuda.device_count()
+    args.model_type = args.model_type.lower()
+    
+    model, tokenizer = read_model_tokenizer(args)
+    return generate_text(args, model, tokenizer)
 
 
 if __name__ == '__main__':

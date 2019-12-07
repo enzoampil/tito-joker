@@ -1,47 +1,59 @@
 import streamlit as st
-import subprocess
-#from google.cloud import storage
-import os
+import yaml
+from run_generation import read_model_tokenizer, generate_text
+import torch
 
+CONFIG = "config.yaml"
 SOURCE = "model1.zip"
 TARGET = "model1.zip"
 BUCKET = "joke-generator-model1"
 MAX_SAMPLES = 20
-CACHE_RESULTS = False
 
-def download_gcs(source, target, bucket_name):
-    print('Downloading file "', source, '" from bucket: "', bucket_name, '"', 'to: "', target, '"')
-    client = storage.Client.create_anonymous_client()
-    # you need to set user_project to None for anonymous access
-    # If not it will attempt to put egress bill on the project you specify,
-    # and then you need to be authenticated to that project.
-    bucket = client.bucket(bucket_name=bucket_name, user_project=None)
-    blob = storage.Blob(source, bucket)
-    blob.download_to_filename(filename=target, client=client)
+class Struct:
+    """
+    Class to convert a dictionary into an object where values are accessible as atttributes
+    """
+    def __init__(self, **entries):
+        self.__dict__.update(**entries)
+        
+    def __repr__(self):
+        return '\n'.join(["{}: {}".format(k, v) for k, v in self.__dict__.items()])
+        
+def read_yaml(fp):
+    """
+    Read yaml file and return as namedtuple (GeneratorConfig)
+    """
+    with open(fp) as f:
+        y = yaml.load(f, Loader=yaml.FullLoader)
+        
+    gen_config = Struct(**y)
+    return gen_config
+
+def get_config(fp):
+    args = read_yaml(fp)
+    args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+    args.n_gpu = torch.cuda.device_count()
+    args.model_type = args.model_type.lower()
+    return args
 
 def clean_joke(joke):
     return joke.replace('<soq>', '').replace('<eoa>', '').replace('<eoq>', '?').replace('<eoa', '')
 
-@st.cache(persist=CACHE_RESULTS)
-def tell_joke(begin, num_samples, num_tokens=40):
-    begin = begin.replace('?', '')
-    a = '''python run_generation.py \
-        --model_type=gpt2 \
-        --model_name_or_path=./model1/ \
-        --length={} \
-        --num_samples={}\
-        --stop_token="<eoj>"\
-        --prompt="{}"
-        '''.format(num_tokens, num_samples, begin)
+@st.cache
+def read_model_tokenizer_cached(args):
+    return read_model_tokenizer(args)
 
-    out = subprocess.check_output(a, shell=True)
-    jokes = (out.decode('utf-8').split('\n')[: -1])
-    processed_jokes = [begin + ' ' + clean_joke(joke) for joke in jokes]
+@st.cache
+def generate_text_cached(args, model, tokenizer):
+    return generate_text(args, model, tokenizer)
+
+def tell_joke(args):
+    model, tokenizer = read_model_tokenizer_cached(args)
+    jokes = generate_text_cached(args, model, tokenizer)
+    processed_jokes = [args.prompt + ' ' + clean_joke(joke) for joke in jokes]
     return processed_jokes
 
 if __name__=='__main__':
-#    if not os.path.exists(url.name):
-#        download_gcs(SOURCE, TARGET, TARGET)
 
     st.markdown("""
     # Ask Tito Joker anything! :)
@@ -59,7 +71,14 @@ if __name__=='__main__':
         index=0)
 
     begin = st.text_input('Ask any question', 'Why did the chicken cross the road?')
+    begin = begin.replace('?', '')
+    
+    args = get_config(CONFIG)
+    print(args)
+    args.prompt = begin
+    args.num_tokens = num_tokens
+    args.num_samples = num_samples
 
-    jokes = tell_joke(begin, num_samples, num_tokens)
+    jokes = tell_joke(args)
     enumerated_jokes = [str(i + 1) + '. ' + joke for i, joke in enumerate(jokes)]
     st.write('\n'.join(enumerated_jokes))
