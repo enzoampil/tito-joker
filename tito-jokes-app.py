@@ -5,6 +5,7 @@ import torch
 import pandas as pd
 from datetime import datetime
 import os
+from random import randrange
 
 CONFIG = "config.yaml"
 SOURCE = "model1.zip"
@@ -12,6 +13,7 @@ TARGET = "model1.zip"
 BUCKET = "joke-generator-model1"
 MAX_SAMPLES = 20
 DEFAULT_QUESTION = 'Why did the chicken cross the road?'
+SEED_GENERATOR = False
 
 class Struct:
     """
@@ -88,8 +90,12 @@ if __name__=='__main__':
     
     args = get_config(CONFIG)
     args.prompt = begin.replace('?', '')
-    args.num_tokens = num_tokens
+    args.length = num_tokens
     args.num_samples = num_samples
+    
+    if not SEED_GENERATOR:
+        args.seed = randrange(10000)
+    
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%S')
     jokes = tell_joke(args)
