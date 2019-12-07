@@ -99,7 +99,7 @@ if __name__=='__main__':
     
     make_directory('data')
     # Split jokes in question & answer.
-    split_jokes = pd.DataFrame([j.split("<eoq>") for j in jokes])
+    split_jokes = pd.DataFrame([j.split("<eoq>") for j in jokes]).fillna("")
     
     # Only save the joke if it's not the default question and at least one of the jokes have a complete question
     if begin != DEFAULT_QUESTION and split_jokes.shape[1] == 2:
