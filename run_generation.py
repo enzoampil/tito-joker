@@ -136,10 +136,11 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
                 inputs["langs"] = torch.tensor([xlm_lang] * inputs["input_ids"].shape[1], device=device).view(1, -1)
 
             outputs = model(**inputs)  # Note: we could also use 'past' with GPT-2/Transfo-XL/XLNet/CTRL (cached hidden-states)
-            next_token_logits = outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.) # batch_size x vocab_size
+            next_token_logits = (outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.)).to(device) # batch_size x vocab_size
 
             # Apply repetition penalty and next token generation for each sample
-            next_token_batch = torch.Tensor(device=device).long()
+            next_token_batch = torch.Tensor().long().to(device)
+
             for i, sample in enumerate(generated):
                 # repetition penalty from CTRL (https://arxiv.org/abs/1909.05858)
                 for _ in set(sample.view(-1).tolist()):
@@ -150,6 +151,7 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
                     next_token = torch.argmax(filtered_logits)
                 else:
                     next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
+                
                 next_token_batch = torch.cat((next_token_batch, next_token))
                     
             generated = torch.cat((generated, next_token_batch.unsqueeze(1)), dim=1)
