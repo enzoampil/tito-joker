@@ -170,7 +170,8 @@ def read_model_tokenizer(args):
     model = model_class.from_pretrained(args.model_name_or_path)
     model.to(args.device)
     model.eval()
-    return model, tokenizer
+    model_c = model
+    return model_c, tokenizer
 
 def generate_text(args, model, tokenizer):
     if args.length < 0 and model.config.max_position_embeddings > 0:

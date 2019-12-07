@@ -37,20 +37,22 @@ def get_config(fp):
     return args
 
 def clean_joke(joke):
-    return joke.replace('<soq>', '').replace('<eoa>', '').replace('<eoq>', '?').replace('<eoa', '')
+    joke = joke.replace('<eoq>', '?')
+    return ' '.join([t for t in joke.split() if t[0] != '<' and t[-1] != '>'])
 
 @st.cache
 def read_model_tokenizer_cached(args):
-    return read_model_tokenizer(args)
+    model, tokenizer = read_model_tokenizer(args)
+    return model, tokenizer
 
-@st.cache
 def generate_text_cached(args, model, tokenizer):
-    return generate_text(args, model, tokenizer)
+    generated_text = generate_text(args, model, tokenizer)
+    return generated_text
 
 def tell_joke(args):
     model, tokenizer = read_model_tokenizer_cached(args)
     jokes = generate_text_cached(args, model, tokenizer)
-    processed_jokes = [args.prompt + ' ' + clean_joke(joke) for joke in jokes]
+    processed_jokes = [args.prompt + ' ' + joke for joke in jokes]
     return processed_jokes
 
 if __name__=='__main__':
@@ -80,5 +82,5 @@ if __name__=='__main__':
     args.num_samples = num_samples
 
     jokes = tell_joke(args)
-    enumerated_jokes = [str(i + 1) + '. ' + joke for i, joke in enumerate(jokes)]
+    enumerated_jokes = [str(i + 1) + '. ' + clean_joke(joke) for i, joke in enumerate(jokes)]
     st.write('\n'.join(enumerated_jokes))
