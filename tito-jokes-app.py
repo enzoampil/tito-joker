@@ -40,7 +40,7 @@ def clean_joke(joke):
     joke = joke.replace('<eoq>', '?')
     return ' '.join([t for t in joke.split() if t[0] != '<' and t[-1] != '>'])
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def tell_joke(args):
     model, tokenizer = read_model_tokenizer(args)
     jokes = generate_text(args, model, tokenizer)
