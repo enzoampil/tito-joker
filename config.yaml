@@ -1,0 +1,14 @@
+model_type: gpt2
+model_name_or_path: ./model1/ 
+prompt: ""
+padding_text: ""
+xlm_lang: ""
+length: 20
+num_samples: 1
+temperature: 1.0
+repetition_penalty: 1.0
+top_k: 0
+top_p: 0.9
+no_cuda: False
+seed: 42
+stop_token: <eos> # Token at which text generation is stopped
