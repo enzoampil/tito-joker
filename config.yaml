@@ -11,4 +11,4 @@ top_k: 0
 top_p: 0.9
 no_cuda: False
 seed: 42
-stop_token: <eos> # Token at which text generation is stopped
+stop_token: <eoj> # Token at which text generation is stopped
