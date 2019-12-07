@@ -94,6 +94,7 @@ if __name__=='__main__':
     args.num_samples = num_samples
     
     if not SEED_GENERATOR:
+        # This ensures that samples are unique, even with similar prompts
         args.seed = randrange(10000)
     
     print(args)
@@ -112,6 +113,7 @@ if __name__=='__main__':
         # Then, save as a csv.
         split_jokes.columns = ['question', 'answer']
         split_jokes['timestamp_utc'] = current_timestamp
+        split_jokes['prompt'] = args.prompt
         print(split_jokes)
         split_jokes = split_jokes.applymap(clean_joke)
         split_jokes_fn = './data/jokes_generated.csv'
