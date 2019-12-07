@@ -41,17 +41,9 @@ def clean_joke(joke):
     return ' '.join([t for t in joke.split() if t[0] != '<' and t[-1] != '>'])
 
 @st.cache
-def read_model_tokenizer_cached(args):
-    model, tokenizer = read_model_tokenizer(args)
-    return model, tokenizer
-
-def generate_text_cached(args, model, tokenizer):
-    generated_text = generate_text(args, model, tokenizer)
-    return generated_text
-
 def tell_joke(args):
-    model, tokenizer = read_model_tokenizer_cached(args)
-    jokes = generate_text_cached(args, model, tokenizer)
+    model, tokenizer = read_model_tokenizer(args)
+    jokes = generate_text(args, model, tokenizer)
     processed_jokes = [args.prompt + ' ' + joke for joke in jokes]
     return processed_jokes
 
@@ -76,10 +68,10 @@ if __name__=='__main__':
     begin = begin.replace('?', '')
     
     args = get_config(CONFIG)
-    print(args)
     args.prompt = begin
     args.num_tokens = num_tokens
     args.num_samples = num_samples
+    print(args)
 
     jokes = tell_joke(args)
     enumerated_jokes = [str(i + 1) + '. ' + clean_joke(joke) for i, joke in enumerate(jokes)]
