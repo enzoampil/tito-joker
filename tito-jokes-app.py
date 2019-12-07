@@ -2,12 +2,16 @@ import streamlit as st
 import yaml
 from run_generation import read_model_tokenizer, generate_text
 import torch
+import pandas as pd
+from datetime import datetime
+import os
 
 CONFIG = "config.yaml"
 SOURCE = "model1.zip"
 TARGET = "model1.zip"
 BUCKET = "joke-generator-model1"
 MAX_SAMPLES = 20
+DEFAULT_QUESTION = 'Why did the chicken cross the road?'
 
 class Struct:
     """
@@ -18,7 +22,24 @@ class Struct:
         
     def __repr__(self):
         return '\n'.join(["{}: {}".format(k, v) for k, v in self.__dict__.items()])
-        
+
+def update_csv(df, fp):
+    # if file does not exist write header 
+    if not os.path.isfile(fp):
+        print("File ({}) not found!")
+        df.to_csv(fp, header='column_names', index=False)
+        print("File ({}) created!")
+    else: # else it exists so append without writing the header
+        print("File ({}) found!")
+        df.to_csv(fp, mode='a', header=False, index=False)
+        print("File ({}) updated!")
+       
+def make_directory(directory):
+    if not os.path.exists(directory):
+        print('Directory ({}) not found!'.format(directory))
+        os.makedirs(directory)
+        print('Directory ({}) created!'.format(directory))
+
 def read_yaml(fp):
     """
     Read yaml file and return as namedtuple (GeneratorConfig)
@@ -37,7 +58,7 @@ def get_config(fp):
     return args
 
 def clean_joke(joke):
-    joke = joke.replace('<eoq>', '?')
+    joke = joke.replace('<eoq>', '?').strip()
     return ' '.join([t for t in joke.split() if t[0] != '<' and t[-1] != '>'])
 
 def tell_joke(args):
@@ -63,15 +84,28 @@ if __name__=='__main__':
         list(range(1, MAX_SAMPLES + 1)),
         index=0)
 
-    begin = st.text_input('Ask any question', 'Why did the chicken cross the road?')
-    begin = begin.replace('?', '')
+    begin = st.text_input('Ask any question', DEFAULT_QUESTION)
     
     args = get_config(CONFIG)
-    args.prompt = begin
+    args.prompt = begin.replace('?', '')
     args.num_tokens = num_tokens
     args.num_samples = num_samples
     print(args)
-
+    current_timestamp = datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%S')
     jokes = tell_joke(args)
+
     enumerated_jokes = [str(i + 1) + '. ' + clean_joke(joke) for i, joke in enumerate(jokes)]
     st.write('\n'.join(enumerated_jokes))
+    
+    make_directory('data')
+    if begin != DEFAULT_QUESTION:
+        # Split jokes in question & answer. Then, save as a csv
+        split_jokes = pd.DataFrame([j.split("<eoq>") for j in jokes])
+        split_jokes.columns = ['question', 'answer']
+        split_jokes['timestamp_utc'] = current_timestamp
+        print(split_jokes)
+        split_jokes = split_jokes.applymap(clean_joke)
+        split_jokes_fn = './data/jokes_generated.csv'
+        update_csv(split_jokes, split_jokes_fn)        
+        
+        print('Generated jokes updated to {} !'.format(split_jokes_fn))
