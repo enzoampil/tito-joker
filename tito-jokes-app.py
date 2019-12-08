@@ -48,8 +48,13 @@ def get_giphy(
         api_response = api_instance.gifs_search_get(
             api_key, q, limit=limit, offset=offset, rating=rating, lang=lang, fmt=fmt
         )
-        first_result_id = api_response.to_dict()["data"][0]["id"]
-        return "https://media.giphy.com/media/{}/giphy.gif".format(first_result_id)
+        results = api_response.to_dict()["data"]
+        if results:
+            first_result_id = results[0]["id"]
+            return "https://media.giphy.com/media/{}/giphy.gif".format(first_result_id)
+        else:
+            return ""
+        
     except ApiException as e:
         print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
 
@@ -160,8 +165,9 @@ if __name__ == "__main__":
     jokes_nouns = get_tokens(jokes[0])
     if jokes:
         giphy_url = get_giphy(jokes_nouns[0].text)
-        print("Giphy url:", giphy_url)
-        st.markdown("![Alt Text]({})".format(giphy_url))
+        if giphy_url:
+            print("Giphy url:", giphy_url)
+            st.markdown("![Alt Text]({})".format(giphy_url))
 
     make_directory("data")
     # Split jokes in question & answer.
