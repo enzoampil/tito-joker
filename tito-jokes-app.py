@@ -74,7 +74,8 @@ if __name__=='__main__':
     st.markdown("""
     # Ask Tito Joker anything! :)
     
-    Created by [Lorenzo Ampil](https://medium.com/@lorenzo.ampil)
+    Created by [Lorenzo Ampil](https://medium.com/@lorenzo.ampil).
+    
     """)
     num_tokens = st.sidebar.selectbox(
         'Token count for output',
@@ -85,6 +86,8 @@ if __name__=='__main__':
         'Number of jokes to generate',
         list(range(1, MAX_SAMPLES + 1)),
         index=0)
+    
+    st.sidebar.markdown("Send feature requests [here](https://forms.gle/yuivvdpQxgRGoq238).")
 
     begin = st.text_input('Ask any question', DEFAULT_QUESTION)
     
