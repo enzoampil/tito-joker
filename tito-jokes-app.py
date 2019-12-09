@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
     # Return gif based on first common noun found (if at least 1 common noun found)
     jokes_nouns = get_tokens(jokes[0])
-    if jokes:
+    if jokes_nouns:
         giphy_url = get_giphy(jokes_nouns[0].text)
         if giphy_url:
             print("Giphy url:", giphy_url)
