@@ -151,7 +151,6 @@ if __name__ == "__main__":
     begin = st.text_input("Ask any question", DEFAULT_QUESTION)
 
     args = get_config(CONFIG)
-    #args.prompt = begin.replace("?", "")
     args.length = num_tokens
     args.num_samples = num_samples
 
@@ -161,7 +160,11 @@ if __name__ == "__main__":
 
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%S")
-    jokes = tell_joke(args, begin)
+    #jokes = tell_joke(args, begin)
+    model, tokenizer = read_model_tokenizer_cached(args)
+    args.prompt = begin.replace("?", "")
+    jokes = generate_text(args, model, tokenizer)
+    jokes = [args.prompt + " " + joke for joke in jokes]
 
     enumerated_jokes = [
         str(i + 1) + ". " + clean_joke(joke) for i, joke in enumerate(jokes)
