@@ -164,7 +164,6 @@ def read_model_tokenizer(args):
     This is important for deployment so that both the model and tokenizer can be read only once while generating text multiple times.
     """
 
-    set_seed(args)
     model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
     tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
     model = model_class.from_pretrained(args.model_name_or_path)
@@ -173,6 +172,7 @@ def read_model_tokenizer(args):
     return model, tokenizer
 
 def generate_text(args, model, tokenizer):
+    set_seed(args)
     if args.length < 0 and model.config.max_position_embeddings > 0:
         args.length = model.config.max_position_embeddings
     elif 0 < model.config.max_position_embeddings < args.length:
