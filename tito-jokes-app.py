@@ -112,9 +112,13 @@ def clean_joke(joke):
     joke = joke.replace("<eoq>", "?").strip()
     return " ".join([t for t in joke.split() if t[0] != "<" and t[-1] != ">"])
 
+@st.cache(allow_output_mutation=True)
+def read_model_tokenizer_cached(args):
+    model, tokenizer = read_model_tokenizer(args)
+    return model, tokenizer
 
 def tell_joke(args):
-    model, tokenizer = read_model_tokenizer(args)
+    model, tokenizer = read_model_tokenizer_cached(args)
     jokes = generate_text(args, model, tokenizer)
     processed_jokes = [args.prompt + " " + joke for joke in jokes]
     return processed_jokes
