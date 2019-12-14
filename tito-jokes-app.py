@@ -160,7 +160,6 @@ if __name__ == "__main__":
 
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%S")
-    #jokes = tell_joke(args, begin)
     model, tokenizer = read_model_tokenizer_cached(args.model_type, args.model_name_or_path, args.device)
     args.prompt = begin.replace("?", "")
     jokes = generate_text(args, model, tokenizer)
