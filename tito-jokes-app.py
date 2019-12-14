@@ -113,8 +113,8 @@ def clean_joke(joke):
     return " ".join([t for t in joke.split() if t[0] != "<" and t[-1] != ">"])
 
 @st.cache(allow_output_mutation=True)
-def read_model_tokenizer_cached(args):
-    model, tokenizer = read_model_tokenizer(args)
+def read_model_tokenizer_cached(model_type, model_name_or_path, device):
+    model, tokenizer = read_model_tokenizer(model_type, model_name_or_path, device)
     return model, tokenizer
 
 def tell_joke(args, begin):
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%S")
     #jokes = tell_joke(args, begin)
-    model, tokenizer = read_model_tokenizer_cached(args)
+    model, tokenizer = read_model_tokenizer_cached(args.model_type, args.model_name_or_path, args.device)
     args.prompt = begin.replace("?", "")
     jokes = generate_text(args, model, tokenizer)
     jokes = [args.prompt + " " + joke for joke in jokes]

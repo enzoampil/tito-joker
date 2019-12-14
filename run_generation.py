@@ -158,16 +158,16 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
     return generated
 
 
-def read_model_tokenizer(args):
+def read_model_tokenizer(model_type, model_name_or_path, device):
     """
     Reads and returns language model and tokenizer.
     This is important for deployment so that both the model and tokenizer can be read only once while generating text multiple times.
     """
 
-    model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
-    model = model_class.from_pretrained(args.model_name_or_path)
-    model.to(args.device)
+    model_class, tokenizer_class = MODEL_CLASSES[model_type]
+    tokenizer = tokenizer_class.from_pretrained(model_name_or_path)
+    model = model_class.from_pretrained(model_name_or_path)
+    model.to(device)
     model.eval()
     return model, tokenizer
 
