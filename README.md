@@ -31,8 +31,10 @@ This model, named **Tito Joker**, was built with the goal of creating an AI that
     1. For example, we might want to explicitly tell Tito Joker to generate *Yo Mama* type of jokes
     2. This will require us to account for joke *type* at training time
 4. **Context controls** that will allow users to feed Tito Joker *contextual information* that they want to use for the generated joke
-    1. An idea would be to apply a similar specification with [BERT for Q&A](https://arxiv.org/abs/1810.04805), where both a question and context paragraphs are used as inputs to the model
-    2. The effect is that the joke generated should be *about* the context paragraphs that are used as inputs
+    1. Implementation ideas:
+        1. Similar specification with [BERT for Q&A](https://arxiv.org/abs/1810.04805), where both a question and context paragraphs are used as inputs to the model
+        2. [Pointer-Generator Networks](https://arxiv.org/abs/1704.04368), which will allow us to get context from source text via *pointing*
+    2. The effect is that the joke generated should be about the context paragraphs that are used as inputs
 
 ## Setup
 
