@@ -10,8 +10,6 @@ import spacy
 import giphy_client
 from giphy_client.rest import ApiException
 
-nlp = spacy.load("en_core_web_sm")
-
 CONFIG = "config.yaml"
 SOURCE = "model1.zip"
 TARGET = "model1.zip"
@@ -19,6 +17,22 @@ BUCKET = "joke-generator-model1"
 MAX_SAMPLES = 20
 DEFAULT_QUESTION = "Why did the chicken cross the road?"
 SEED_GENERATOR = False
+GIF_GENERATOR = False
+ABOUT_SECTION = """
+&nbsp; &nbsp; &nbsp;
+### About
+
+This model, named "Tito Joker", was built with the goal of creating an AI that understands humor well enough to tell jokes that are actually funny.
+
+It was trained by fine-tuning the recently released [OpenAI GPT-2](https://openai.com/blog/gpt-2-1-5b-release/) on an open sourced [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes).
+
+Why is the model named Tito Joker? Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
+
+### Acknowledgments
+
+Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
+
+"""
 
 
 class Struct:
@@ -136,6 +150,9 @@ if __name__ == "__main__":
     
     """
     )
+
+    st.sidebar.markdown("### Settings")
+    
     num_tokens = st.sidebar.selectbox(
         "Token count for output", [10, 20, 40, 80, 160], index=2
     )
@@ -144,11 +161,18 @@ if __name__ == "__main__":
         "Number of jokes to generate", list(range(1, MAX_SAMPLES + 1)), index=0
     )
 
+    generate_gif = st.sidebar.selectbox(
+        "Generate a GIF?", ["No", "Yes"], index=1 if GIF_GENERATOR else 0
+    )
+
     st.sidebar.markdown(
         "Send feature requests [here](https://forms.gle/yuivvdpQxgRGoq238)."
     )
 
     begin = st.text_input("Ask any question", DEFAULT_QUESTION)
+
+    # Add About section
+    st.sidebar.markdown(ABOUT_SECTION)
 
     args = get_config(CONFIG)
     args.length = num_tokens
@@ -166,23 +190,25 @@ if __name__ == "__main__":
     jokes = [args.prompt + " " + joke for joke in jokes]
 
     enumerated_jokes = [
-        str(i + 1) + ". " + clean_joke(joke) for i, joke in enumerate(jokes)
+        "### " + str(i + 1) + ". " + clean_joke(joke) for i, joke in enumerate(jokes)
     ]
-    st.write("\n".join(enumerated_jokes))
+    st.markdown("\n".join(enumerated_jokes))
 
-    # Return gif based on first common noun found (if at least 1 common noun found)
-    jokes_nouns = get_tokens(jokes[0])
-    if jokes_nouns:
-        giphy_url = get_giphy(jokes_nouns[0].text)
-        if giphy_url:
-            print("Giphy url:", giphy_url)
-            st.markdown("![Alt Text]({})".format(giphy_url))
+    if generate_gif == "Yes":
+        nlp = spacy.load("en_core_web_sm")
+        # Return gif based on first common noun found (if at least 1 common noun found)
+        jokes_nouns = get_tokens(jokes[0])
+        if jokes_nouns:
+            giphy_url = get_giphy(jokes_nouns[0].text)
+            if giphy_url:
+                print("Giphy url:", giphy_url)
+                st.markdown("![Alt Text]({})".format(giphy_url))
 
     make_directory("data")
     # Split jokes in question & answer.
     split_jokes = pd.DataFrame([j.split("<eoq>") for j in jokes]).fillna("")
 
-    # Only save the joke if it's not the default question and at least one of the jokes have a complete question
+    # Only save the joke if at least one of the jokes have a complete question
     if split_jokes.shape[1] == 2:
         # Then, save as a csv.
         split_jokes.columns = ["question", "answer"]
