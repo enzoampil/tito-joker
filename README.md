@@ -3,9 +3,9 @@
 
 This model, named **Tito Joker**, was built with the goal of creating an AI that understands humor well enough to tell jokes that are actually funny. He still has a long way to go but we will get there!
 
-Why is the model named Tito Joker? Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
+**Why is the model named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
 
-Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).
+**Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).**
 
 ## Methodology
 
