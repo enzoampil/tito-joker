@@ -1,3 +1,4 @@
+# Config for arguments used for the `run_generation` module
 model_type: gpt2
 model_name_or_path: ./model1/ 
 prompt: ""
