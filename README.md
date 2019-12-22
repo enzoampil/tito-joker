@@ -11,15 +11,17 @@
 
 # Basic features
 
-##Can tell jokes from any custom riddle input
+## Can tell jokes from any custom riddle input
 
 ![](main.gif)
 
-## Automatic GIF generation based on entities found in the generated joke (turned off by default - turn on from left sidebar)
+## Automatic GIF generation based on entities 
+*Turned off by default - turn on from left sidebar*
 
 ![](gif_generator.gif)
 
-## Ability to tell multiple jokes of up to 20 at a time (set this on left sidebar)
+## Ability to tell multiple jokes of up to 20 at a time
+*Set this on left sidebar*
 
 <img src="multiple.png" width="700">
 
