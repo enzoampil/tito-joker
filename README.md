@@ -1,7 +1,7 @@
 # Hi, I am [Tito Joker](http://streamlit.thinkingmachin.es:8080/)! :wave: :grinning:
-## A humorous AI model that uses state-of-the-art Deep Learning to tell jokes
+## A humorous AI that uses state-of-the-art Deep Learning to tell jokes
 
-**Tito Joker** is an AI that aims to understand humor well enough to tell jokes that are actually funny. All you have to do is input a riddle type question and he tells a joke using it. He still has a long way to go but we will get there!
+**Tito Joker** aims to understand humor well enough to tell jokes that are actually funny. All you have to do is input a riddle type question and he tells a joke using it. He still has a long way to go but we will get there!
 
 ![](typing.gif)
 
