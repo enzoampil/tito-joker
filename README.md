@@ -12,7 +12,7 @@
 
 ![](gif_generator.gif)
 
-## Ability to tell multiple jokes of up to 20 at a time
+## Ability to tell up to 20 jokes at a time
 *Set this on left sidebar*
 
 <img src="multiple.png" width="700">
