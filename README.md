@@ -21,7 +21,7 @@
 
 ### **Ability to tell multiple jokes** of up to 20 at a time (set this on left sidebar)
 
-![](multiple.png =250x250)
+<img src="multiple.png" width="48">
 
 ## Methodology
 
