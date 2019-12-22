@@ -7,12 +7,12 @@
 
 **Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).**
 
-## Automatic GIF generation based on entities 
+## Generate GIFs automatically 
 *Turned off by default - turn on from left sidebar*
 
 ![](gif_generator.gif)
 
-## Ability to tell up to 20 jokes at a time
+## Tell multiple jokes from a single input
 *Set this on left sidebar*
 
 <img src="multiple.png" width="700">
@@ -32,8 +32,8 @@ A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kagg
 
 ## Acknowledgments
 
-Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
+Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch, [Streamlit](https://streamlit.io/) for making it super easy to deploy Tito Joker as a webapp, and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
 
 ## About
 
-**Why is the model named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
+**Why is the AI named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
