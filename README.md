@@ -1,24 +1,21 @@
-# [Tito Joker](http://streamlit.thinkingmachin.es:8080/)
-## Humorous AI model that uses state-of-the-art Deep Learning to tell jokes
+# Hi, I am [Tito Joker](http://streamlit.thinkingmachin.es:8080/)! :wave: :grinning:
+## A humorous AI model that uses state-of-the-art Deep Learning to tell jokes
 
-This model, named **Tito Joker**, was built with the goal of creating an AI that understands humor well enough to tell jokes that are actually funny. He still has a long way to go but we will get there!
+**Tito Joker** is an AI that aims to understand humor well enough to tell jokes that are actually funny. All you have to do is input a riddle type question and he tells a joke using it. He still has a long way to go but we will get there!
 
-![](main.gif)
-
-**Why is the model named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
+![](typing.gif)
 
 **Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).**
 
+*Warning: the training dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
+
 ## Basic features
-1. **Joke generation from any custom riddle input**
+1. **Can tell jokes** from any custom riddle input
     1. Sample input: *Why did the chicken cross the road?*
     2. Sample output: *Why did the chicken cross the road? To get to the other side.*
-2. **Automatic GIF generation based on entities found in the generated joke**
-    1. Max token count for output
-    2. Number of jokes to generate (max 20)
-    3. GIF generation (set to "No" by default)
-        1. This is currently done by returning a GIF from GIPHY based on an entity that is detected from the generated joke using named entity recognition (NER)
-3. **Feature requests form** for any functionality that you want in future versions of Tito Joker
+![](main.gif)
+2. **Automatic GIF generation** based on entities found in the generated joke (turned off by default - turn on from left sidebar)
+3. **Ability to tell multiple jokes** of up to 20 at a time (set this on left sidebar)
 
 ## Methodology
 
@@ -34,3 +31,7 @@ A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kagg
 ## Acknowledgments
 
 Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
+
+## About
+
+**Why is the model named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
