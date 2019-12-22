@@ -9,11 +9,6 @@
 
 *Warning: the training dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
 
-# Basic features
-
-## Can tell jokes from any custom riddle input
-*Illustrated from GIF above*
-
 ## Automatic GIF generation based on entities 
 *Turned off by default - turn on from left sidebar*
 
@@ -24,21 +19,21 @@
 
 <img src="multiple.png" width="700">
 
-# Methodology
+## Methodology
 
-## Architecture
+### Architecture
 Fine-tuned version of the recently released [OpenAI GPT-2 model](https://openai.com/blog/gpt-2-1-5b-release/) with a left-to-right language modeling training objective. Similar hyperparameters were used from the [original paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf).
 
-## Data
+### Data
 A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kaggle was used for fine-tuning. Aside from the original preprocessing, additional special tokens were added to allow the model to understand the difference between the "question" and "answer" components of a riddle type joke.
 
-# Trained models
+## Trained models
 1. [Tito Joker v1 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model1.zip)
 
-# Acknowledgments
+## Acknowledgments
 
 Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
 
-# About
+## About
 
 **Why is the model named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
