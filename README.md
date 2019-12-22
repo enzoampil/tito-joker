@@ -21,7 +21,7 @@
 
 ### **Ability to tell multiple jokes** of up to 20 at a time (set this on left sidebar)
 
-<img src="multiple.png" width="200">
+<img src="multiple.png" width="1000">
 
 ## Methodology
 
