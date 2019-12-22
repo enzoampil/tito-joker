@@ -7,8 +7,6 @@
 
 **Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).**
 
-*Warning: the training dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
-
 ## Automatic GIF generation based on entities 
 *Turned off by default - turn on from left sidebar*
 
@@ -26,6 +24,8 @@ Fine-tuned version of the recently released [OpenAI GPT-2 model](https://openai.
 
 ### Data
 A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kaggle was used for fine-tuning. Aside from the original preprocessing, additional special tokens were added to allow the model to understand the difference between the "question" and "answer" components of a riddle type joke.
+
+*Warning: the dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
 
 ## Trained models
 1. [Tito Joker v1 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model1.zip)
