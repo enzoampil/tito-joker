@@ -10,12 +10,18 @@
 *Warning: the training dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
 
 ## Basic features
-1. **Can tell jokes** from any custom riddle input
-    1. Sample input: *Why did the chicken cross the road?*
-    2. Sample output: *Why did the chicken cross the road? To get to the other side.*
+
+### **Can tell jokes** from any custom riddle input
+
 ![](main.gif)
-2. **Automatic GIF generation** based on entities found in the generated joke (turned off by default - turn on from left sidebar)
-3. **Ability to tell multiple jokes** of up to 20 at a time (set this on left sidebar)
+
+### **Automatic GIF generation** based on entities found in the generated joke (turned off by default - turn on from left sidebar)
+
+![](gif_generator.gif)
+
+### **Ability to tell multiple jokes** of up to 20 at a time (set this on left sidebar)
+
+![](multiple.png)
 
 ## Methodology
 
