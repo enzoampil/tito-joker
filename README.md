@@ -12,8 +12,7 @@
 # Basic features
 
 ## Can tell jokes from any custom riddle input
-
-![](main.gif)
+*Illustrated from GIF above*
 
 ## Automatic GIF generation based on entities 
 *Turned off by default - turn on from left sidebar*
