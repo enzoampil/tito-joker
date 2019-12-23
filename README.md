@@ -1,5 +1,5 @@
 # Hi, I am [Tito Joker](http://streamlit.thinkingmachin.es:8080/)! :wave: :grinning:
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![license: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.com/enzoampil/tito-joker.svg?token=UHxLpqqapxjVVa2vsreG&branch=master)](https://travis-ci.com/enzoampil/tito-joker)
 ## A humorous AI that uses state-of-the-art deep learning to tell jokes
 
