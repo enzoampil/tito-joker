@@ -68,7 +68,7 @@ def get_giphy(
             return "https://media.giphy.com/media/{}/giphy.gif".format(first_result_id)
         else:
             return ""
-        
+
     except ApiException as e:
         print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
         return ""
@@ -126,10 +126,12 @@ def clean_joke(joke):
     joke = joke.replace("<eoq>", "?").strip()
     return " ".join([t for t in joke.split() if t[0] != "<" and t[-1] != ">"])
 
+
 @st.cache(allow_output_mutation=True)
 def read_model_tokenizer_cached(model_type, model_name_or_path, device):
     model, tokenizer = read_model_tokenizer(model_type, model_name_or_path, device)
     return model, tokenizer
+
 
 def tell_joke(args, begin):
     model, tokenizer = read_model_tokenizer_cached(args)
@@ -152,7 +154,7 @@ if __name__ == "__main__":
     )
 
     st.sidebar.markdown("### Settings")
-    
+
     num_tokens = st.sidebar.selectbox(
         "Token count for output", [10, 20, 40, 80, 160], index=2
     )
@@ -184,7 +186,9 @@ if __name__ == "__main__":
 
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%S")
-    model, tokenizer = read_model_tokenizer_cached(args.model_type, args.model_name_or_path, args.device)
+    model, tokenizer = read_model_tokenizer_cached(
+        args.model_type, args.model_name_or_path, args.device
+    )
     args.prompt = begin.replace("?", "")
     jokes = generate_text(args, model, tokenizer)
     jokes = [args.prompt + " " + joke for joke in jokes]

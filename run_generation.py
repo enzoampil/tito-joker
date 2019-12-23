@@ -29,7 +29,14 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
-from transformers import GPT2Config, OpenAIGPTConfig, XLNetConfig, TransfoXLConfig, XLMConfig, CTRLConfig
+from transformers import (
+    GPT2Config,
+    OpenAIGPTConfig,
+    XLNetConfig,
+    TransfoXLConfig,
+    XLMConfig,
+    CTRLConfig,
+)
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizer
@@ -39,22 +46,37 @@ from transformers import CTRLLMHeadModel, CTRLTokenizer
 from transformers import XLMWithLMHeadModel, XLMTokenizer
 
 
-logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
-                    datefmt = '%m/%d/%Y %H:%M:%S',
-                    level = logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
+    datefmt="%m/%d/%Y %H:%M:%S",
+    level=logging.INFO,
+)
 logger = logging.getLogger(__name__)
 
 MAX_LENGTH = int(10000)  # Hardcoded max length to avoid infinite loop
 
-ALL_MODELS = sum((tuple(conf.pretrained_config_archive_map.keys()) for conf in (GPT2Config, OpenAIGPTConfig, XLNetConfig, TransfoXLConfig, XLMConfig, CTRLConfig)), ())
+ALL_MODELS = sum(
+    (
+        tuple(conf.pretrained_config_archive_map.keys())
+        for conf in (
+            GPT2Config,
+            OpenAIGPTConfig,
+            XLNetConfig,
+            TransfoXLConfig,
+            XLMConfig,
+            CTRLConfig,
+        )
+    ),
+    (),
+)
 
 MODEL_CLASSES = {
-    'gpt2': (GPT2LMHeadModel, GPT2Tokenizer),
-    'ctrl': (CTRLLMHeadModel, CTRLTokenizer),
-    'openai-gpt': (OpenAIGPTLMHeadModel, OpenAIGPTTokenizer),
-    'xlnet': (XLNetLMHeadModel, XLNetTokenizer),
-    'transfo-xl': (TransfoXLLMHeadModel, TransfoXLTokenizer),
-    'xlm': (XLMWithLMHeadModel, XLMTokenizer),
+    "gpt2": (GPT2LMHeadModel, GPT2Tokenizer),
+    "ctrl": (CTRLLMHeadModel, CTRLTokenizer),
+    "openai-gpt": (OpenAIGPTLMHeadModel, OpenAIGPTTokenizer),
+    "xlnet": (XLNetLMHeadModel, XLNetTokenizer),
+    "transfo-xl": (TransfoXLLMHeadModel, TransfoXLTokenizer),
+    "xlm": (XLMWithLMHeadModel, XLMTokenizer),
 }
 
 # Padding text to help Transformer-XL and XLNet with short prompts as proposed by Aman Rusia
@@ -79,7 +101,7 @@ def set_seed(args):
         torch.cuda.manual_seed_all(args.seed)
 
 
-def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')):
+def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float("Inf")):
     """ Filter a distribution of logits using top-k and/or nucleus (top-p) filtering
         Args:
             logits: logits distribution shape (vocabulary size)
@@ -88,7 +110,9 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
                 Nucleus filtering is described in Holtzman et al. (http://arxiv.org/abs/1904.09751)
         From: https://gist.github.com/thomwolf/1a5a29f6962089e871b94cbd09daf317
     """
-    assert logits.dim() == 1  # batch size 1 for now - could be updated for more but the code would be less clear
+    assert (
+        logits.dim() == 1
+    )  # batch size 1 for now - could be updated for more but the code would be less clear
     top_k = min(top_k, logits.size(-1))  # Safety check
     if top_k > 0:
         # Remove all tokens with a probability less than the last token of the top-k
@@ -110,36 +134,78 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
     return logits
 
 
-def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=0, top_p=0.0, repetition_penalty=1.0,
-                    is_xlnet=False, is_xlm_mlm=False, xlm_mask_token=None, xlm_lang=None, device='cpu'):
+def sample_sequence(
+    model,
+    length,
+    context,
+    num_samples=1,
+    temperature=1,
+    top_k=0,
+    top_p=0.0,
+    repetition_penalty=1.0,
+    is_xlnet=False,
+    is_xlm_mlm=False,
+    xlm_mask_token=None,
+    xlm_lang=None,
+    device="cpu",
+):
     context = torch.tensor(context, dtype=torch.long, device=device)
     context = context.unsqueeze(0).repeat(num_samples, 1)
     generated = context
     with torch.no_grad():
         for _ in trange(length):
 
-            inputs = {'input_ids': generated}
-            if is_xlnet: 
+            inputs = {"input_ids": generated}
+            if is_xlnet:
                 # XLNet is a direct (predict same token, not next token) and bi-directional model by default
                 # => need one additional dummy token in the input (will be masked), attention mask and target mapping (see model docstring)
-                input_ids = torch.cat((generated, torch.zeros((1, 1), dtype=torch.long, device=device)), dim=1)
-                perm_mask = torch.zeros((1, input_ids.shape[1], input_ids.shape[1]), dtype=torch.float, device=device)
+                input_ids = torch.cat(
+                    (generated, torch.zeros((1, 1), dtype=torch.long, device=device)),
+                    dim=1,
+                )
+                perm_mask = torch.zeros(
+                    (1, input_ids.shape[1], input_ids.shape[1]),
+                    dtype=torch.float,
+                    device=device,
+                )
                 perm_mask[:, :, -1] = 1.0  # Previous tokens don't see last token
-                target_mapping = torch.zeros((1, 1, input_ids.shape[1]), dtype=torch.float, device=device)
+                target_mapping = torch.zeros(
+                    (1, 1, input_ids.shape[1]), dtype=torch.float, device=device
+                )
                 target_mapping[0, 0, -1] = 1.0  # predict last token
-                inputs = {'input_ids': input_ids, 'perm_mask': perm_mask, 'target_mapping': target_mapping}
+                inputs = {
+                    "input_ids": input_ids,
+                    "perm_mask": perm_mask,
+                    "target_mapping": target_mapping,
+                }
 
             if is_xlm_mlm and xlm_mask_token:
                 # XLM MLM models are direct models (predict same token, not next token)
                 # => need one additional dummy token in the input (will be masked and guessed)
-                input_ids = torch.cat((generated, torch.full((1, 1), xlm_mask_token, dtype=torch.long, device=device)), dim=1)
-                inputs = {'input_ids': input_ids}
+                input_ids = torch.cat(
+                    (
+                        generated,
+                        torch.full(
+                            (1, 1), xlm_mask_token, dtype=torch.long, device=device
+                        ),
+                    ),
+                    dim=1,
+                )
+                inputs = {"input_ids": input_ids}
 
             if xlm_lang is not None:
-                inputs["langs"] = torch.tensor([xlm_lang] * inputs["input_ids"].shape[1], device=device).view(1, -1)
+                inputs["langs"] = torch.tensor(
+                    [xlm_lang] * inputs["input_ids"].shape[1], device=device
+                ).view(1, -1)
 
-            outputs = model(**inputs)  # Note: we could also use 'past' with GPT-2/Transfo-XL/XLNet/CTRL (cached hidden-states)
-            next_token_logits = (outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.)).to(device) # batch_size x vocab_size
+            outputs = model(
+                **inputs
+            )  # Note: we could also use 'past' with GPT-2/Transfo-XL/XLNet/CTRL (cached hidden-states)
+            next_token_logits = (
+                outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.0)
+            ).to(
+                device
+            )  # batch_size x vocab_size
 
             # Apply repetition penalty and next token generation for each sample
             next_token_batch = torch.Tensor().long().to(device)
@@ -148,15 +214,19 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
                 # repetition penalty from CTRL (https://arxiv.org/abs/1909.05858)
                 for _ in set(sample.view(-1).tolist()):
                     next_token_logits[i][_] /= repetition_penalty
-                
-                filtered_logits = top_k_top_p_filtering(next_token_logits[i], top_k=top_k, top_p=top_p)
-                if temperature == 0: #greedy sampling:
+
+                filtered_logits = top_k_top_p_filtering(
+                    next_token_logits[i], top_k=top_k, top_p=top_p
+                )
+                if temperature == 0:  # greedy sampling:
                     next_token = torch.argmax(filtered_logits)
                 else:
-                    next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
-                
+                    next_token = torch.multinomial(
+                        F.softmax(filtered_logits, dim=-1), num_samples=1
+                    )
+
                 next_token_batch = torch.cat((next_token_batch, next_token))
-                    
+
             generated = torch.cat((generated, next_token_batch.unsqueeze(1)), dim=1)
     return generated
 
@@ -174,35 +244,48 @@ def read_model_tokenizer(model_type, model_name_or_path, device):
     model.eval()
     return model, tokenizer
 
+
 def generate_text(args, model, tokenizer):
     set_seed(args)
     if args.length < 0 and model.config.max_position_embeddings > 0:
         args.length = model.config.max_position_embeddings
     elif 0 < model.config.max_position_embeddings < args.length:
-        args.length = model.config.max_position_embeddings  # No generation bigger than model size 
+        args.length = (
+            model.config.max_position_embeddings
+        )  # No generation bigger than model size
     elif args.length < 0:
         args.length = MAX_LENGTH  # avoid infinite loop
 
     logger.info(args)
     if args.model_type in ["ctrl"]:
         if args.temperature > 0.7:
-            logger.info('CTRL typically works better with lower temperatures (and lower top_k).')
+            logger.info(
+                "CTRL typically works better with lower temperatures (and lower top_k)."
+            )
 
     while True:
         xlm_lang = None
         # XLM Language usage detailed in the issues #1414
-        if args.model_type in ["xlm"] and hasattr(tokenizer, 'lang2id') and hasattr(model.config, 'use_lang_emb') \
-                and model.config.use_lang_emb:
+        if (
+            args.model_type in ["xlm"]
+            and hasattr(tokenizer, "lang2id")
+            and hasattr(model.config, "use_lang_emb")
+            and model.config.use_lang_emb
+        ):
             if args.xlm_lang:
                 language = args.xlm_lang
             else:
                 language = None
                 while language not in tokenizer.lang2id.keys():
-                    language = input("Using XLM. Select language in " + str(list(tokenizer.lang2id.keys())) + " >>> ")
+                    language = input(
+                        "Using XLM. Select language in "
+                        + str(list(tokenizer.lang2id.keys()))
+                        + " >>> "
+                    )
             xlm_lang = tokenizer.lang2id[language]
 
         # XLM masked-language modeling (MLM) models need masked token (see details in sample_sequence)
-        is_xlm_mlm = args.model_type in ["xlm"] and 'mlm' in args.model_name_or_path
+        is_xlm_mlm = args.model_type in ["xlm"] and "mlm" in args.model_name_or_path
         if is_xlm_mlm:
             xlm_mask_token = tokenizer.mask_token_id
         else:
@@ -211,13 +294,19 @@ def generate_text(args, model, tokenizer):
         raw_text = args.prompt if args.prompt else input("Model prompt >>> ")
         if args.model_type in ["transfo-xl", "xlnet"]:
             # Models with memory likes to have a long prompt for short inputs.
-            raw_text = (args.padding_text if args.padding_text else PADDING_TEXT) + raw_text
+            raw_text = (
+                args.padding_text if args.padding_text else PADDING_TEXT
+            ) + raw_text
         context_tokens = tokenizer.encode(raw_text)
 
         if args.model_type == "ctrl":
-            if not any(context_tokens[0] == x for x in tokenizer.control_codes.values()):
-                logger.info("WARNING! You are not starting your generation from a control code so you won't get good results")
-                
+            if not any(
+                context_tokens[0] == x for x in tokenizer.control_codes.values()
+            ):
+                logger.info(
+                    "WARNING! You are not starting your generation from a control code so you won't get good results"
+                )
+
         outputs = sample_sequence(
             model=model,
             context=context_tokens,
@@ -233,10 +322,12 @@ def generate_text(args, model, tokenizer):
             xlm_lang=xlm_lang,
             device=args.device,
         )
-        outputs = outputs[:, len(context_tokens):].tolist()
+        outputs = outputs[:, len(context_tokens) :].tolist()
         text_candidates = []
         for out in outputs:
-            text = tokenizer.decode(out, clean_up_tokenization_spaces=False, skip_special_tokens=False)
+            text = tokenizer.decode(
+                out, clean_up_tokenization_spaces=False, skip_special_tokens=False
+            )
             text = text[: text.find(args.stop_token) if args.stop_token else None]
             text_candidates.append(text)
             print(text)
@@ -244,38 +335,71 @@ def generate_text(args, model, tokenizer):
             break
     return text_candidates
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_type", default=None, type=str, required=True,
-                        help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
-    parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
-                        help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
+    parser.add_argument(
+        "--model_type",
+        default=None,
+        type=str,
+        required=True,
+        help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()),
+    )
+    parser.add_argument(
+        "--model_name_or_path",
+        default=None,
+        type=str,
+        required=True,
+        help="Path to pre-trained model or shortcut name selected in the list: "
+        + ", ".join(ALL_MODELS),
+    )
     parser.add_argument("--prompt", type=str, default="")
     parser.add_argument("--padding_text", type=str, default="")
-    parser.add_argument("--xlm_lang", type=str, default="", help="Optional language when used with the XLM model.")
+    parser.add_argument(
+        "--xlm_lang",
+        type=str,
+        default="",
+        help="Optional language when used with the XLM model.",
+    )
     parser.add_argument("--length", type=int, default=20)
     parser.add_argument("--num_samples", type=int, default=1)
-    parser.add_argument("--temperature", type=float, default=1.0,
-                        help="temperature of 0 implies greedy sampling")
-    parser.add_argument("--repetition_penalty", type=float, default=1.0,
-                        help="primarily useful for CTRL model; in that case, use 1.2")
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=1.0,
+        help="temperature of 0 implies greedy sampling",
+    )
+    parser.add_argument(
+        "--repetition_penalty",
+        type=float,
+        default=1.0,
+        help="primarily useful for CTRL model; in that case, use 1.2",
+    )
     parser.add_argument("--top_k", type=int, default=0)
     parser.add_argument("--top_p", type=float, default=0.9)
-    parser.add_argument("--no_cuda", action='store_true',
-                        help="Avoid using CUDA when available")
-    parser.add_argument('--seed', type=int, default=42,
-                        help="random seed for initialization")
-    parser.add_argument('--stop_token', type=str, default=None,
-                        help="Token at which text generation is stopped")
-    
+    parser.add_argument(
+        "--no_cuda", action="store_true", help="Avoid using CUDA when available"
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42, help="random seed for initialization"
+    )
+    parser.add_argument(
+        "--stop_token",
+        type=str,
+        default=None,
+        help="Token at which text generation is stopped",
+    )
+
     args = parser.parse_args()
-    args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+    args.device = torch.device(
+        "cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu"
+    )
     args.n_gpu = torch.cuda.device_count()
     args.model_type = args.model_type.lower()
-    
+
     model, tokenizer = read_model_tokenizer(args)
     return generate_text(args, model, tokenizer)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
