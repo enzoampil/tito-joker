@@ -22,7 +22,7 @@ ABOUT_SECTION = """
 &nbsp; &nbsp; &nbsp;
 ### About
 
-This model, named "Tito Joker", was built with the goal of creating an AI that understands humor well enough to tell jokes that are actually funny.
+This model, named "Tito Joker", was built with the goal of creating an AI that understands humor well enough to tell jokes that are actually funny. The code is fully open-sourced on [github](https://github.com/enzoampil/tito-joker).
 
 It was trained by fine-tuning the recently released [OpenAI GPT-2](https://openai.com/blog/gpt-2-1-5b-release/) on an open sourced [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes).
 
