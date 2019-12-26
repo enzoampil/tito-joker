@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     st.markdown(
         """
-    # Ask Tito Joker anything! :)
+    # Ask [Tito Joker](https://github.com/enzoampil/tito-joker) anything! :)
     
     Created by [Lorenzo Ampil](https://medium.com/@lorenzo.ampil).
     
