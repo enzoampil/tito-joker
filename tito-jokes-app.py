@@ -3,6 +3,7 @@ import yaml
 from run_generation import read_model_tokenizer, generate_text
 import torch
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import os
 from random import randrange
@@ -14,9 +15,12 @@ CONFIG = "config.yaml"
 SOURCE = "model1.zip"
 TARGET = "model1.zip"
 BUCKET = "joke-generator-model1"
+JOKES_FP = "./data/jokes_generated.csv"
 MAX_SAMPLES = 20
+SEED_RANGE = 100000
 DEFAULT_QUESTION = "Why did the chicken cross the road?"
-SEED_GENERATOR = False
+GENERATE_MULTIPLE_OPTION = False
+SEED_GENERATOR = True
 GIF_GENERATOR = False
 ABOUT_SECTION = """
 &nbsp; &nbsp; &nbsp;
@@ -83,6 +87,10 @@ def get_tokens(text, pos=["NOUN"]):
 
 
 def update_csv(df, fp):
+    orig_df = pd.read_csv(fp)
+    orig_num_cols = orig_df.shape[1]
+    new_num_cols = df.shape[1]
+    assert orig_num_cols == new_num_cols, 'Number of columns not equal (new - {}, orig - {}'.format(new_num_cols, orig_num_cols)
     # if file does not exist write header
     if not os.path.isfile(fp):
         print("File ({}) not found!")
@@ -93,6 +101,23 @@ def update_csv(df, fp):
         df.to_csv(fp, mode="a", header=False, index=False)
         print("File ({}) updated!")
 
+def backfill_csv(fp, funny, not_funny):
+    """
+    Replace 'funny' and 'not_funny' columns of the last row with the given values if both are None
+    """
+    df = pd.read_csv(fp)
+    last_row = df.iloc[-1]
+    if np.isnan(last_row['funny']) and np.isnan(last_row['not_funny']):
+        print('Both "funny" and "not_funny" from the last row are None ...')
+        print('Replacing with {} for "funny" and {} for "not_funny" ...'.format(funny, not_funny))
+        last_row['funny'] = funny
+        last_row['not_funny'] = not_funny
+        df.iloc[-1] = last_row
+        df.to_csv(fp, index=False)
+        print('Last row replacement finished!')
+    else:
+        print('"funny" and "not_funny" from the last row are NOT both None ...')
+        print('CSV was left untouched!')
 
 def make_directory(directory):
     if not os.path.exists(directory):
@@ -159,9 +184,12 @@ if __name__ == "__main__":
         "Token count for output", [10, 20, 40, 80, 160], index=2
     )
 
-    num_samples = st.sidebar.selectbox(
-        "Number of jokes to generate", list(range(1, MAX_SAMPLES + 1)), index=0
-    )
+    if GENERATE_MULTIPLE_OPTION:
+        num_samples = st.sidebar.selectbox(
+            "Number of jokes to generate", list(range(1, MAX_SAMPLES + 1)), index=0
+        )
+    else:
+        num_samples = 1
 
     generate_gif = st.sidebar.selectbox(
         "Generate a GIF?", ["No", "Yes"], index=1 if GIF_GENERATOR else 0
@@ -180,9 +208,9 @@ if __name__ == "__main__":
     args.length = num_tokens
     args.num_samples = num_samples
 
-    if not SEED_GENERATOR:
+    if SEED_GENERATOR:
         # This ensures that samples are unique, even with similar prompts
-        args.seed = randrange(10000)
+        args.seed = randrange(SEED_RANGE)
 
     print(args)
     current_timestamp = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%S")
@@ -196,7 +224,14 @@ if __name__ == "__main__":
     enumerated_jokes = [
         "### " + str(i + 1) + ". " + clean_joke(joke) for i, joke in enumerate(jokes)
     ]
-    st.markdown("\n".join(enumerated_jokes))
+
+    for i, joke in enumerate(enumerated_jokes):
+        st.markdown(joke)
+        funny_key = 'funny_{}'.format(i)
+        not_funny_key = 'not_funny_{}'.format(i)
+        funny = st.button('Funny', key=funny_key)
+        not_funny = st.button('Not funny', key=not_funny_key)
+        print("Feedback for previous joke: funny={}, not_funny={}".format(funny, not_funny))
 
     if generate_gif == "Yes":
         nlp = spacy.load("en_core_web_sm")
@@ -218,9 +253,16 @@ if __name__ == "__main__":
         split_jokes.columns = ["question", "answer"]
         split_jokes["timestamp_utc"] = current_timestamp
         split_jokes["prompt"] = args.prompt
+
         print(split_jokes)
         split_jokes = split_jokes.applymap(clean_joke)
-        split_jokes_fn = "./data/jokes_generated.csv"
-        update_csv(split_jokes, split_jokes_fn)
+        split_jokes["funny"] = None
+        split_jokes["not_funny"] = None
 
-        print("Generated jokes updated to {} !".format(split_jokes_fn))
+        # Backfill feedback to previous joke generated
+        backfill_csv(JOKES_FP, funny, not_funny)
+
+        # Update csv with new joke
+        update_csv(split_jokes, JOKES_FP)
+        print("Generated jokes updated to {} !".format(JOKES_FP))
+
