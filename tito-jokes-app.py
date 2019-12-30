@@ -86,11 +86,14 @@ def get_tokens(text, pos=["NOUN"]):
     return [t for t in doc if t.pos_ in pos]
 
 
-def update_csv(df, fp):
-    orig_df = pd.read_csv(fp)
-    orig_num_cols = orig_df.shape[1]
-    new_num_cols = df.shape[1]
-    assert orig_num_cols == new_num_cols, 'Number of columns not equal (new - {}, orig - {}'.format(new_num_cols, orig_num_cols)
+def update_csv(df, fp, check_columns=False):
+    # This should be in a separate module as a test
+    # This is meant to avoid the error that occurs when a new column is added to the jokes file
+    if check_columns:
+        orig_df = pd.read_csv(fp)
+        orig_num_cols = orig_df.shape[1]
+        new_num_cols = df.shape[1]
+        assert orig_num_cols == new_num_cols, 'Number of columns not equal (new - {}, orig - {}'.format(new_num_cols, orig_num_cols)
     # if file does not exist write header
     if not os.path.isfile(fp):
         print("File ({}) not found!")
