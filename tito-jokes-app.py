@@ -93,7 +93,11 @@ def update_csv(df, fp, check_columns=False):
         orig_df = pd.read_csv(fp)
         orig_num_cols = orig_df.shape[1]
         new_num_cols = df.shape[1]
-        assert orig_num_cols == new_num_cols, 'Number of columns not equal (new - {}, orig - {}'.format(new_num_cols, orig_num_cols)
+        assert (
+            orig_num_cols == new_num_cols
+        ), "Number of columns not equal (new - {}, orig - {}".format(
+            new_num_cols, orig_num_cols
+        )
     # if file does not exist write header
     if not os.path.isfile(fp):
         print("File ({}) not found!")
@@ -104,23 +108,29 @@ def update_csv(df, fp, check_columns=False):
         df.to_csv(fp, mode="a", header=False, index=False)
         print("File ({}) updated!")
 
+
 def backfill_csv(fp, funny, not_funny):
     """
     Replace 'funny' and 'not_funny' columns of the last row with the given values if both are None
     """
     df = pd.read_csv(fp)
     last_row = df.iloc[-1]
-    if np.isnan(last_row['funny']) and np.isnan(last_row['not_funny']):
+    if np.isnan(last_row["funny"]) and np.isnan(last_row["not_funny"]):
         print('Both "funny" and "not_funny" from the last row are None ...')
-        print('Replacing with {} for "funny" and {} for "not_funny" ...'.format(funny, not_funny))
-        last_row['funny'] = funny
-        last_row['not_funny'] = not_funny
+        print(
+            'Replacing with {} for "funny" and {} for "not_funny" ...'.format(
+                funny, not_funny
+            )
+        )
+        last_row["funny"] = funny
+        last_row["not_funny"] = not_funny
         df.iloc[-1] = last_row
         df.to_csv(fp, index=False)
-        print('Last row replacement finished!')
+        print("Last row replacement finished!")
     else:
         print('"funny" and "not_funny" from the last row are NOT both None ...')
-        print('CSV was left untouched!')
+        print("CSV was left untouched!")
+
 
 def make_directory(directory):
     if not os.path.exists(directory):
@@ -230,11 +240,15 @@ if __name__ == "__main__":
 
     for i, joke in enumerate(enumerated_jokes):
         st.markdown(joke)
-        funny_key = 'funny_{}'.format(i)
-        not_funny_key = 'not_funny_{}'.format(i)
-        funny = st.button('Funny', key=funny_key)
-        not_funny = st.button('Not funny', key=not_funny_key)
-        print("Feedback for previous joke: funny={}, not_funny={}".format(funny, not_funny))
+        funny_key = "funny_{}".format(i)
+        not_funny_key = "not_funny_{}".format(i)
+        funny = st.button("Funny", key=funny_key)
+        not_funny = st.button("Not funny", key=not_funny_key)
+        print(
+            "Feedback for previous joke: funny={}, not_funny={}".format(
+                funny, not_funny
+            )
+        )
 
     if generate_gif == "Yes":
         nlp = spacy.load("en_core_web_sm")
@@ -268,4 +282,3 @@ if __name__ == "__main__":
         # Update csv with new joke
         update_csv(split_jokes, JOKES_FP)
         print("Generated jokes updated to {} !".format(JOKES_FP))
-
