@@ -20,6 +20,10 @@
 
 ![](main.gif)
 
+## [New] Joke rating system
+
+![](feedback.png)
+
 ## Methodology
 
 ### Architecture
