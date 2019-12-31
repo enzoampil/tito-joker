@@ -184,7 +184,7 @@ if __name__ == "__main__":
     st.sidebar.markdown("### Settings")
 
     num_tokens = st.sidebar.selectbox(
-        "Token count for output", [10, 20, 40, 80, 160], index=2
+        "Max token count for output", [10, 20, 40, 80, 160], index=2
     )
 
     if GENERATE_MULTIPLE_OPTION:
