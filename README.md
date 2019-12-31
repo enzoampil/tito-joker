@@ -17,9 +17,8 @@
 ![](gif_generator.gif)
 
 ## Tell multiple jokes from a single input
-*Set this on left sidebar*
 
-<img src="multiple.png" width="700">
+![](main.gif)
 
 ## Methodology
 
