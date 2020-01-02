@@ -20,7 +20,7 @@
 
 ![](main.gif)
 
-## [New] Joke rating system
+## Joke rating system
 
 ![](feedback.png)
 
