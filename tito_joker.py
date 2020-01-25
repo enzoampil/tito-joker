@@ -56,6 +56,13 @@ def get_tokens(text, nlp, pos=["NOUN"]):
     return [t for t in doc if t.pos_ in pos]
 
 
+def create_empty_csv(fp, columns):
+    empty_df = pd.DataFrame(columns=columns)
+    print("Saving empty csv with columns:", columns)
+    empty_df.to_csv(fp)
+    print("Empty csv was saved to:", fp)
+
+
 def update_csv(df, fp, check_columns=False):
     # This should be in a separate module as a test
     # This is meant to avoid the error that occurs when a new column is added to the jokes file
@@ -79,10 +86,12 @@ def update_csv(df, fp, check_columns=False):
         print("File ({}) updated!")
 
 
-def backfill_csv(fp, funny, not_funny):
+def backfill_csv(fp, funny, not_funny, columns):
     """
     Replace 'funny' and 'not_funny' columns of the last row with the given values if both are None
     """
+    if not os.path.isfile(fp):
+        create_empty_csv(fp, columns)
     df = pd.read_csv(fp)
     last_row = df.iloc[-1]
     if np.isnan(last_row["funny"]) and np.isnan(last_row["not_funny"]):
