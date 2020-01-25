@@ -92,23 +92,25 @@ def backfill_csv(fp, funny, not_funny, columns):
     """
     if not os.path.isfile(fp):
         create_empty_csv(fp, columns)
-    df = pd.read_csv(fp)
-    last_row = df.iloc[-1]
-    if np.isnan(last_row["funny"]) and np.isnan(last_row["not_funny"]):
-        print('Both "funny" and "not_funny" from the last row are None ...')
-        print(
-            'Replacing with {} for "funny" and {} for "not_funny" ...'.format(
-                funny, not_funny
-            )
-        )
-        last_row["funny"] = funny
-        last_row["not_funny"] = not_funny
-        df.iloc[-1] = last_row
-        df.to_csv(fp, index=False)
-        print("Last row replacement finished!")
+        print("Backfill was forgone since joke csv was not found!")
     else:
-        print('"funny" and "not_funny" from the last row are NOT both None ...')
-        print("CSV was left untouched!")
+        df = pd.read_csv(fp)
+        last_row = df.iloc[-1]
+        if np.isnan(last_row["funny"]) and np.isnan(last_row["not_funny"]):
+            print('Both "funny" and "not_funny" from the last row are None ...')
+            print(
+                'Replacing with {} for "funny" and {} for "not_funny" ...'.format(
+                    funny, not_funny
+                )
+            )
+            last_row["funny"] = funny
+            last_row["not_funny"] = not_funny
+            df.iloc[-1] = last_row
+            df.to_csv(fp, index=False)
+            print("Last row replacement finished!")
+        else:
+            print('"funny" and "not_funny" from the last row are NOT both None ...')
+            print("CSV was left untouched!")
 
 
 def make_directory(directory):
