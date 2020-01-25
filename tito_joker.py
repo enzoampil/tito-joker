@@ -59,7 +59,7 @@ def get_tokens(text, nlp, pos=["NOUN"]):
 def create_empty_csv(fp, columns):
     empty_df = pd.DataFrame(columns=columns)
     print("Saving empty csv with columns:", columns)
-    empty_df.to_csv(fp)
+    empty_df.to_csv(fp, index=False)
     print("Empty csv was saved to:", fp)
 
 
