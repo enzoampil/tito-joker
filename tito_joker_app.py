@@ -40,7 +40,7 @@ Why is the model named Tito Joker? Because in Filipino, "tito" means "uncle" whe
 
 Special thanks to [Hugging Face](https://huggingface.co/) for their implementation of OpenAI GPT-2 using PyTorch and [Thinking Machines Data Science](https://thinkingmachin.es/) for sponsoring the server that I am running Tito Joker on.
 """
-JOKES_CSV_COLUMNS = ["question","answer","timestamp_utc","prompt","funny not_funny"]
+JOKES_CSV_COLUMNS = ["question","answer","timestamp_utc","prompt","funny", "not_funny"]
 
 
 if __name__ == "__main__":
