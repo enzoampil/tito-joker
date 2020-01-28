@@ -1,7 +1,7 @@
 # Hi, I am [Tito Joker](http://streamlit.thinkingmachin.es:8080/)! :wave: :grinning:
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.com/enzoampil/tito-joker.svg?token=UHxLpqqapxjVVa2vsreG&branch=master)](https://travis-ci.com/enzoampil/tito-joker)
-[![Website](https://img.shields.io/website.svg?down_color=red&down_message=offline&up_message=online&url=http%3A%2F%2Fstreamlit.thinkingmachin.es%3A8080)](http://streamlit.thinkingmachin.es:8080/)
+[![Website](https://img.shields.io/website.svg?down_color=red&down_message=offline&up_message=online&url=http%3A%2F%2F35.225.94.177%3A8501)](http://35.225.94.177:8501/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 ## A humorous AI that uses state-of-the-art deep learning to tell jokes
 
@@ -9,7 +9,7 @@
 
 ![](typing.gif)
 
-**Interact with Tito Joker on this [website](http://streamlit.thinkingmachin.es:8080/).**
+**Interact with Tito Joker on this [website](35.225.94.177).**
 
 ## Generate GIFs automatically 
 *Turned off by default - turn on from left sidebar*
