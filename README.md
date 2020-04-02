@@ -9,7 +9,7 @@
 
 ![](typing.gif)
 
-**Interact with Tito Joker on this [website](35.225.94.177).**
+**Interact with Tito Joker on this [website](http://35.225.94.177:8501/).**
 
 ## Generate GIFs automatically 
 *Turned off by default - turn on from left sidebar*
