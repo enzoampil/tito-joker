@@ -32,7 +32,7 @@ def process_jokes(raw_fp, target_fp):
     riddle_jokes_list = (
         "<soq> " + jokes_df.questions + " <eoq> " + jokes_df.answer + " <|endoftext|>"
     ).values.tolist()
-    riddle_jokes = " <eoj> \n".join(riddle_jokes_list)
+    riddle_jokes = "\n".join(riddle_jokes_list)
 
     with open(target_fp, "w") as f:
         f.write(riddle_jokes)
