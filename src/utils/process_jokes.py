@@ -5,7 +5,7 @@ import pandas as pd
 
 @click.command()
 @click.argument("raw_fp", type=click.Path(exists=True))
-@click.argument("target_fp", type=click.Path(exists=True))
+@click.argument("target_fp", type=click.Path())
 def process_jokes(raw_fp="shortjokes.csv", target_fp="riddle_jokes.txt"):
     df = pd.read_csv(raw_fp)
 
