@@ -3,10 +3,11 @@
 import click
 import pandas as pd
 
+
 @click.command()
-@click.argument("raw_fp", type=click.Path(exists=True))
-@click.argument("target_fp", type=click.Path())
-def process_jokes(raw_fp="shortjokes.csv", target_fp="riddle_jokes.txt"):
+@click.argument("raw_fp", default="shortjokes.csv", type=click.Path(exists=True))
+@click.argument("target_fp", default="riddle_jokes.txt", type=click.Path())
+def process_jokes(raw_fp, target_fp):
     df = pd.read_csv(raw_fp)
 
     # Append token at the end of each joke to indicate the end of a joke
@@ -35,3 +36,7 @@ def process_jokes(raw_fp="shortjokes.csv", target_fp="riddle_jokes.txt"):
 
     with open(target_fp, "w") as f:
         f.write(riddle_jokes)
+
+
+if __name__ == "__main__":
+    process_jokes()
