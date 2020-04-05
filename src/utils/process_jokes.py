@@ -29,7 +29,7 @@ def process_jokes(raw_fp="shortjokes.csv", target_fp="riddle_jokes.txt"):
     )
 
     riddle_jokes_list = (
-        "<soq> " + jokes_df.questions + " <eoq> " + jokes_df.answer + " <eoa>"
+        "<soq> " + jokes_df.questions + " <eoq> " + jokes_df.answer + " <|endoftext|>"
     ).values.tolist()
     riddle_jokes = " <eoj> \n".join(riddle_jokes_list)
 
