@@ -21,6 +21,7 @@
 ![](main.gif)
 
 ## Joke rating system
+Help Tito Joker improve his humor by giving him feedback!
 
 ![](feedback.png)
 
