@@ -48,7 +48,10 @@ JOKES_CSV_COLUMNS = [
     "funny",
     "not_funny",
 ]
-
+MODEL_VERSION_MAPPING = {
+    "Tito Joker v1": "./model1/",
+    "Tito Joker v2": "./model2/",
+}
 
 if __name__ == "__main__":
 
@@ -62,6 +65,10 @@ if __name__ == "__main__":
     )
 
     st.sidebar.markdown("### Settings")
+
+    model_version = st.sidebar.selectbox(
+        "Model version", ["Tito Joker v1", "Tito Joker v2"], index=1
+    )
 
     num_tokens = st.sidebar.selectbox(
         "Max token count for output", [10, 20, 40, 80, 160], index=2
@@ -90,6 +97,7 @@ if __name__ == "__main__":
     args = get_config(CONFIG)
     args.length = num_tokens
     args.num_samples = num_samples
+    args.model_name_or_path = MODEL_VERSION_MAPPING[model_version]
 
     if SEED_GENERATOR:
         # This ensures that samples are unique, even with similar prompts
