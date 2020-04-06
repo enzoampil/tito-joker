@@ -17,6 +17,7 @@
 ![](gif_generator.gif)
 
 ## Tell multiple jokes from a single input
+*Tito Joker can give unique responses to the same input*
 
 ![](main.gif)
 
