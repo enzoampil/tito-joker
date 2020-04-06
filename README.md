@@ -40,7 +40,7 @@ To learn more, please refer to Tito Joker's [medium article](https://towardsdata
 
 ## Trained models
 1. [Tito Joker v1 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model1.zip)
-2. [Tito Joker v2 (OpenAI GPT-2)](https://storage.cloud.google.com/joke-generator-model1/model2.zip)
+2. [Tito Joker v2 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model2.zip)
 
 ## Acknowledgments
 
