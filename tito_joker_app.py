@@ -49,8 +49,8 @@ JOKES_CSV_COLUMNS = [
     "not_funny",
 ]
 MODEL_VERSION_MAPPING = {
-    "Tito Joker v1": "./model1/",
-    "Tito Joker v2": "./model2/",
+    "Tito Joker v1": {"model_path":"./model1/", "stop_token": "<eoj>"},
+    "Tito Joker v2": {"model_path": "./model2/", "stop_token": "<|endoftext|>"},
 }
 
 if __name__ == "__main__":
@@ -97,7 +97,8 @@ if __name__ == "__main__":
     args = get_config(CONFIG)
     args.length = num_tokens
     args.num_samples = num_samples
-    args.model_name_or_path = MODEL_VERSION_MAPPING[model_version]
+    args.model_name_or_path = MODEL_VERSION_MAPPING[model_version]["model_path"]
+    args.stop_token = MODEL_VERSION_MAPPING[model_version]["stop_token"]
 
     if SEED_GENERATOR:
         # This ensures that samples are unique, even with similar prompts
