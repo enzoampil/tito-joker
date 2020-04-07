@@ -36,8 +36,6 @@ A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kagg
 
 *Warning: the dataset contains NSFW jokes, so Tito Joker's humour will also reflect jokes of this nature.*
 
-To learn more, please refer to Tito Joker's [medium article](https://towardsdatascience.com/can-a-robot-make-you-laugh-teaching-an-ai-to-tell-jokes-815f1e1e689c?source=friends_link&sk=342342be4cbf0064f8f0e7cb7ec0b6bc) on Towards Data Science.
-
 ## Preparing the data
 ```
 python ./src/utils/process_jokes.py shortjokes.csv ./data/riddle_jokes.txt
@@ -59,3 +57,5 @@ Special thanks to [Hugging Face](https://huggingface.co/) for their implementati
 ## About
 
 **Why is the AI named Tito Joker?** Because in Filipino, "tito" means "uncle" when translated to English, and in the Philippines, we all have that uncle who says the corniest jokes!
+
+To learn more, please refer to Tito Joker's [medium article](https://towardsdatascience.com/can-a-robot-make-you-laugh-teaching-an-ai-to-tell-jokes-815f1e1e689c?source=friends_link&sk=342342be4cbf0064f8f0e7cb7ec0b6bc) on Towards Data Science.
