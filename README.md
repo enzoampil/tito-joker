@@ -46,7 +46,11 @@ python ./src/utils/process_jokes.py shortjokes.csv ./data/riddle_jokes.txt
 ## Training the model
 Please refer to the experiment [notebooks](https://github.com/enzoampil/tito-joker/tree/master/experiments).
 
-*Note: The number at the end of the notebook's filename corresponds to the model version that it produces (no number means 1)*
+*Note: The number at the end of the notebook's filename corresponds to the model version it produces (no number means 1)*
+
+## Trained models
+1. [Tito Joker v1 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model1.zip)
+2. [Tito Joker v2 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model2.zip)
 
 ## Acknowledgments
 
