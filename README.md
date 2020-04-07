@@ -38,9 +38,15 @@ A [jokes dataset](https://www.kaggle.com/abhinavmoudgil95/short-jokes) from Kagg
 
 To learn more, please refer to Tito Joker's [medium article](https://towardsdatascience.com/can-a-robot-make-you-laugh-teaching-an-ai-to-tell-jokes-815f1e1e689c?source=friends_link&sk=342342be4cbf0064f8f0e7cb7ec0b6bc) on Towards Data Science.
 
-## Trained models
-1. [Tito Joker v1 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model1.zip)
-2. [Tito Joker v2 (OpenAI GPT-2)](https://storage.googleapis.com/joke-generator-model1/model2.zip)
+## Preparing the data
+```
+python ./src/utils/process_jokes.py shortjokes.csv ./data/riddle_jokes.txt
+```
+
+## Training the model
+Please refer to the experiment [notebooks](https://github.com/enzoampil/tito-joker/tree/master/experiments).
+
+*Note: The number at the end of the notebook's filename corresponds to the model version that it produces (no number means 1)*
 
 ## Acknowledgments
 
