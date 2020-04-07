@@ -9,7 +9,7 @@
 
 ![](typing.gif)
 
-**Interact with Tito Joker on this [website](http://35.225.94.177:8501/) and check out his [medium article](https://towardsdatascience.com/can-a-robot-make-you-laugh-teaching-an-ai-to-tell-jokes-815f1e1e689c?source=friends_link&sk=342342be4cbf0064f8f0e7cb7ec0b6bc)**
+Interact with Tito Joker on this [website](http://35.225.94.177:8501/) and check out his [medium article](https://towardsdatascience.com/can-a-robot-make-you-laugh-teaching-an-ai-to-tell-jokes-815f1e1e689c?source=friends_link&sk=342342be4cbf0064f8f0e7cb7ec0b6bc)!
 
 ## Generate GIFs automatically 
 *Turned off by default - turn on from left sidebar*
