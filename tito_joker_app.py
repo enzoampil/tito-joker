@@ -51,6 +51,7 @@ JOKES_CSV_COLUMNS = [
 MODEL_VERSION_MAPPING = {
     "Tito Joker v1": {"model_path":"./model1/", "stop_token": "<eoj>"},
     "Tito Joker v2": {"model_path": "./model2/", "stop_token": "<|endoftext|>"},
+    "Tito Joker v2.1": {"model_path": "./model2-1/", "stop_token": "<|endoftext|>"},
 }
 
 if __name__ == "__main__":
