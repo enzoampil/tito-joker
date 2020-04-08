@@ -326,7 +326,8 @@ def generate_text(args, model, tokenizer):
         text_candidates = []
         stop_token_id = tokenizer._convert_token_to_id(args.stop_token)
         for out in outputs:
-            out = out[: out.index(stop_token_id) + 1]
+            # Not needed due to `stop_token`
+            #out = out[: out.index(stop_token_id) + 1]
             text = tokenizer.decode(
                 out, clean_up_tokenization_spaces=False, skip_special_tokens=False
             )
