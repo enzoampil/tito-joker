@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     # Default to the last model (assumed most updated)
     model_version = st.sidebar.selectbox(
-        "Model version", MODEL_VERSION_MAPPING.keys(), index=2
+        "Model version", list(MODEL_VERSION_MAPPING.keys()), index=2
     )
 
     num_tokens = st.sidebar.selectbox(
