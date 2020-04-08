@@ -51,6 +51,7 @@ JOKES_CSV_COLUMNS = [
 MODEL_VERSION_MAPPING = {
     "Tito Joker v1": {"model_path":"./model1/", "stop_token": "<eoj>"},
     "Tito Joker v2": {"model_path": "./model2/", "stop_token": "<|endoftext|>"},
+    "Tito Joker v2.1": {"model_path": "./model2-1/", "stop_token": "<|endoftext|>"},
 }
 
 if __name__ == "__main__":
@@ -66,8 +67,9 @@ if __name__ == "__main__":
 
     st.sidebar.markdown("### Settings")
 
+    # Default to the last model (assumed most updated)
     model_version = st.sidebar.selectbox(
-        "Model version", ["Tito Joker v1", "Tito Joker v2"], index=1
+        "Model version", list(MODEL_VERSION_MAPPING.keys()), index=2
     )
 
     num_tokens = st.sidebar.selectbox(
