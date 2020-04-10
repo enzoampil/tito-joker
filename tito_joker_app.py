@@ -26,6 +26,7 @@ DEFAULT_QUESTION = "Why did the chicken cross the road?"
 GENERATE_MULTIPLE_OPTION = False
 SEED_GENERATOR = True
 GIF_GENERATOR = False
+MAX_TOKEN_COUNT = False
 ABOUT_SECTION = """
 &nbsp; &nbsp; &nbsp;
 ### About
@@ -48,10 +49,13 @@ JOKES_CSV_COLUMNS = [
     "funny",
     "not_funny",
 ]
+
+# Model level settings
 MODEL_VERSION_MAPPING = {
-    "Tito Joker v1": {"model_path":"./model1/", "stop_token": "<eoj>"},
-    "Tito Joker v2": {"model_path": "./model2/", "stop_token": "<|endoftext|>"},
-    "Tito Joker v2.1": {"model_path": "./model2-1/", "stop_token": "<|endoftext|>"},
+    "Tito Joker v1": {"model_path":"./model1/", "stop_token": "<eoj>", "sentiment_controls": False},
+    "Tito Joker v2": {"model_path": "./model2/", "stop_token": "<|endoftext|>", "sentiment_controls": False},
+    "Tito Joker v2.1": {"model_path": "./model2-1/", "stop_token": "<|endoftext|>", "sentiment_controls": False},
+    "Tito Joker v2.2": {"model_path": "./model2-2/", "stop_token": "<|endoftext|>", "sentiment_controls": True},
 }
 
 if __name__ == "__main__":
@@ -68,13 +72,18 @@ if __name__ == "__main__":
     st.sidebar.markdown("### Settings")
 
     # Default to the last model (assumed most updated)
+    # Make sure model versions are sorted to make sure the latest version is always the last one
+    model_versions = list(MODEL_VERSION_MAPPING.keys())
+    model_versions.sort()
     model_version = st.sidebar.selectbox(
-        "Model version", list(MODEL_VERSION_MAPPING.keys()), index=2
+        "Model version", model_versions, index=len(model_versions) - 1
     )
 
-    num_tokens = st.sidebar.selectbox(
-        "Max token count for output", [10, 20, 40, 80, 160], index=2
-    )
+    num_tokens = 40
+    if MAX_TOKEN_COUNT:
+        num_tokens = st.sidebar.selectbox(
+            "Max token count for output", [10, 20, 40, 80, 160], index=2
+        )
 
     if GENERATE_MULTIPLE_OPTION:
         num_samples = st.sidebar.selectbox(
@@ -82,6 +91,15 @@ if __name__ == "__main__":
         )
     else:
         num_samples = 1
+
+    pre_tokens = ["<soq>"]
+    # Only add sentiment tag in the beginning when sentiment control models are chosen
+    if MODEL_VERSION_MAPPING[model_version]['sentiment_controls']:
+        generate_sentiment_alias = st.sidebar.selectbox(
+            "Sentiment Mode", ["Positive", "Negative"], index=1 if GIF_GENERATOR else 0
+        )
+        generate_sentiment = "<positive>" if generate_sentiment_alias == "Positive" else "<negative>"
+        pre_tokens.append(generate_sentiment)
 
     generate_gif = st.sidebar.selectbox(
         "Generate a GIF?", ["No", "Yes"], index=1 if GIF_GENERATOR else 0
@@ -111,7 +129,7 @@ if __name__ == "__main__":
     model, tokenizer = read_model_tokenizer_cached(
         args.model_type, args.model_name_or_path, args.device
     )
-    args.prompt = begin.replace("?", "")
+    args.prompt = " ".join(pre_tokens) + " " + begin.replace("?", "")
     jokes = generate_text(args, model, tokenizer)
     jokes = [args.prompt + " " + joke for joke in jokes]
 
