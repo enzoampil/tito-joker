@@ -72,10 +72,12 @@ if __name__ == "__main__":
     st.sidebar.markdown("### Settings")
 
     # Default to the last model (assumed most updated)
+    model_versions = list(MODEL_VERSION_MAPPING.keys())
     model_version = st.sidebar.selectbox(
-        "Model version", list(MODEL_VERSION_MAPPING.keys()), index=2
+        "Model version", model_versions, index=len(model_versions) - 1
     )
 
+    num_tokens = 40
     if MAX_TOKEN_COUNT:
         num_tokens = st.sidebar.selectbox(
             "Max token count for output", [10, 20, 40, 80, 160], index=2
@@ -89,6 +91,7 @@ if __name__ == "__main__":
         num_samples = 1
 
     pre_tokens = ["<soq>"]
+    # Only add sentiment tag in the beginning when sentiment control models are chosen
     if MODEL_VERSION_MAPPING[model_version]['sentiment_controls']:
         generate_sentiment_alias = st.sidebar.selectbox(
             "Sentiment Mode", ["Positive", "Negative"], index=1 if GIF_GENERATOR else 0
