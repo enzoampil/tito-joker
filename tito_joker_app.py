@@ -72,7 +72,8 @@ if __name__ == "__main__":
     st.sidebar.markdown("### Settings")
 
     # Default to the last model (assumed most updated)
-    model_versions = list(MODEL_VERSION_MAPPING.keys())
+    # Make sure model versions are sorted to make sure the latest version is always the last one
+    model_versions = list(MODEL_VERSION_MAPPING.keys()).sort()
     model_version = st.sidebar.selectbox(
         "Model version", model_versions, index=len(model_versions) - 1
     )
